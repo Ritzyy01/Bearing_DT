@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bearing Digital Twin | PCA Prognosis</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.plot.ly/plotly-2.24.1.min.js"></script>
+    <style>
+        body { background-color: #0f172a; color: #f8fafc; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        .card { background-color: #1e293b; border: 1px solid #334155; border-radius: 0.75rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); }
+        .feature-card { border-left: 4px solid #3b82f6; }
+    </style>
+</head>
+<body class="p-4 md:p-8 h-screen flex flex-col">
+
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
+        <div>
+            <h1 class="text-3xl font-extrabold text-white tracking-tight">Wind Turbine Bearing Digital Twin</h1>
+            <p class="text-slate-400 mt-1">Real-time Data Stream & PCA Health Indicator Synthesis</p>
+        </div>
+        <div class="flex gap-3">
+            <button id="startBtn" class="px-6 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold rounded-lg shadow-lg transition duration-200">
+                ▶ Start Simulation
+            </button>
+            <button id="stopBtn" class="px-6 py-2.5 bg-rose-600 hover:bg-rose-500 text-white font-semibold rounded-lg shadow-lg transition duration-200">
+                ■ Stop Stream
+            </button>
+        </div>
+    </div>
+
+    <div class="card p-5 mb-6 bg-slate-800/50 border-l-4 border-indigo-500">
+        <h2 class="text-lg font-bold text-indigo-300 mb-2">Model Architecture & Feature Engineering</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-sm text-slate-300">
+            <div>
+                <strong class="text-white">1. Feature Extraction:</strong> The incoming signal is processed to extract <strong>RMS</strong>, <strong>Kurtosis</strong>, and <strong>Crest Factor</strong>. A Fast Fourier Transform (FFT) isolates fault frequencies.
+            </div>
+            <div>
+                <strong class="text-white">2. Feature Normalization:</strong> A pre-computation pass scales PCA variance, mapping the Health Indicator dynamically to a 1.0 (Healthy) to 0.0 (Failed) bounds.
+            </div>
+            <div>
+                <strong class="text-white">3. Health Indicator (HI) Creation:</strong> Selected features are fused using <strong>PCA</strong>. An Exponential Moving Average (EMA) filter is applied to smooth out environmental noise and reveal the true degradation trend.
+            </div>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-2 md:grid-cols-5 gap-4 mb-6">
+        <div class="card p-4 text-center flex flex-col justify-center">
+            <h3 class="text-xs text-slate-400 uppercase font-bold tracking-wider">Simulation Timeline</h3>
+            <p class="text-3xl font-black text-white mt-2">Day <span id="kpi-day" class="text-indigo-400">--</span></p>
+            <p class="text-xs text-slate-500 mt-1">Out of 50 Days</p>
+        </div>
+        
+        <div class="card p-4 text-center flex flex-col justify-center border-b-4 border-emerald-500" id="hi-card">
+            <h3 class="text-xs text-slate-400 uppercase font-bold tracking-wider">PCA Health Indicator</h3>
+            <p class="text-4xl font-black mt-2" id="kpi-hi">--</p>
+            <p class="text-xs text-slate-500 mt-1">1.0 (Healthy) → 0.0 (Failed)</p>
+        </div>
+
+        <div class="card feature-card p-4 text-center flex flex-col justify-center border-l-sky-500">
+            <h3 class="text-xs text-slate-400 uppercase font-bold tracking-wider">Kurtosis</h3>
+            <p class="text-2xl font-bold text-white mt-2" id="kpi-kurtosis">--</p>
+            <p class="text-xs text-slate-500 mt-1">Normal: ~3.0</p>
+        </div>
+
+        <div class="card feature-card p-4 text-center flex flex-col justify-center border-l-teal-500">
+            <h3 class="text-xs text-slate-400 uppercase font-bold tracking-wider">RMS Vibration</h3>
+            <p class="text-2xl font-bold text-white mt-2"><span id="kpi-rms">--</span> g</p>
+            <p class="text-xs text-slate-500 mt-1">Overall Energy</p>
+        </div>
+
+        <div class="card feature-card p-4 text-center flex flex-col justify-center border-l-purple-500">
+            <h3 class="text-xs text-slate-400 uppercase font-bold tracking-wider">Crest Factor</h3>
+            <p class="text-2xl font-bold text-white mt-2" id="kpi-crest">--</p>
+            <p class="text-xs text-slate-500 mt-1">Peak Impulsiveness</p>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 flex-grow min-h-0">
+        <div class="card p-4 flex flex-col h-80">
+            <div class="flex justify-between items-center mb-1">
+                <h2 class="text-md font-bold text-slate-200">EMA Filtered Degradation Trend</h2>
+                <span class="text-xs bg-slate-700 px-2 py-1 rounded text-slate-300">PCA Fused</span>
+            </div>
+            <div id="trendChart" class="flex-grow w-full h-full"></div>
+        </div>
+
+        <div class="card p-4 flex flex-col h-80">
+            <div class="flex justify-between items-center mb-1">
+                <h2 class="text-md font-bold text-slate-200">Frequency Spectrum (FFT)</h2>
+                <span class="text-xs bg-slate-700 px-2 py-1 rounded text-slate-300">Max: 10kHz</span>
+            </div>
+            <div id="fftChart" class="flex-grow w-full h-full"></div>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = window.location.origin;
+
+        document.getElementById("startBtn").addEventListener("click", () => {
+            fetch(`${API_URL}/start-simulation`, { method: "POST" }).catch(console.error);
+        });
+
+        document.getElementById("stopBtn").addEventListener("click", () => {
+            fetch(`${API_URL}/stop-simulation`, { method: "POST" }).catch(console.error);
+        });
+
+        const darkLayout = {
+            paper_bgcolor: 'rgba(0,0,0,0)', plot_bgcolor: 'rgba(0,0,0,0)',
+            font: { color: '#94a3b8', family: 'Segoe UI' },
+            margin: { t: 10, r: 20, b: 40, l: 40 },
+            xaxis: { gridcolor: '#334155', zerolinecolor: '#475569' },
+            yaxis: { gridcolor: '#334155', zerolinecolor: '#475569' },
+            autosize: true
+        };
+
+        // Trend Chart (Starts at 1.0, degrades to 0.0)
+        Plotly.newPlot('trendChart', [{ 
+            x: [], y: [], type: 'scatter', mode: 'lines', 
+            line: {color: '#10b981', width: 4}, fill: 'tozeroy', fillcolor: 'rgba(16, 185, 129, 0.1)'
+        }], {...darkLayout, yaxis: {title: 'Health (1.0 to 0.0)', range: [0, 1.05]}, xaxis: {title: 'Time (Days)', range: [0, 50]}}, {responsive: true});
+
+        // FFT Chart
+        Plotly.newPlot('fftChart', [{ 
+            x: [], y: [], type: 'scatter', fill: 'tozeroy', line: {color: '#c084fc', width: 2} 
+        }], {...darkLayout, xaxis: {title: 'Frequency (Hz)'}, yaxis: {title: 'Amplitude'}}, {responsive: true});
+
+        let trendDays = [];
+        let trendHI = [];
+        let lastDayProcessed = -1;
+
+        async function fetchCurrentState() {
+            try {
+                const response = await fetch(`${API_URL}/current`);
+                if (!response.ok) return;
+                const data = await response.json();
+                if (data.error) return;
+
+                document.getElementById('kpi-day').innerText = data.day_index;
+                document.getElementById('kpi-kurtosis').innerText = data.kurtosis ? data.kurtosis.toFixed(2) : '--';
+                document.getElementById('kpi-rms').innerText = data.rms ? data.rms.toFixed(3) : '--';
+                document.getElementById('kpi-crest').innerText = data.crest_factor ? data.crest_factor.toFixed(2) : '--';
+                
+                // PCA Health Indicator Logic (Flipped: 1.0 is healthy, 0.0 is failed)
+                const hi = data.health_indicator_pca;
+                const hiEl = document.getElementById('kpi-hi');
+                const hiCard = document.getElementById('hi-card');
+                
+                hiEl.innerText = hi.toFixed(3);
+                
+                if (hi > 0.70) {
+                    hiEl.className = "text-4xl font-black mt-2 text-emerald-400";
+                    hiCard.className = "card p-4 text-center flex flex-col justify-center border-b-4 border-emerald-500";
+                    Plotly.restyle('trendChart', { 'line.color': '#10b981', 'fillcolor': 'rgba(16, 185, 129, 0.1)' });
+                } else if (hi > 0.30) {
+                    hiEl.className = "text-4xl font-black mt-2 text-yellow-400";
+                    hiCard.className = "card p-4 text-center flex flex-col justify-center border-b-4 border-yellow-500";
+                    Plotly.restyle('trendChart', { 'line.color': '#fbbf24', 'fillcolor': 'rgba(251, 191, 36, 0.1)' });
+                } else {
+                    hiEl.className = "text-4xl font-black mt-2 text-rose-500";
+                    hiCard.className = "card p-4 text-center flex flex-col justify-center border-b-4 border-rose-600";
+                    Plotly.restyle('trendChart', { 'line.color': '#e11d48', 'fillcolor': 'rgba(225, 29, 72, 0.1)' });
+                }
+
+                // Update FFT Chart
+                Plotly.update('fftChart', { x: [data.fft_freqs], y: [data.fft_amps] });
+
+                // Update Smoothed Trend Chart
+                if (data.day_index !== lastDayProcessed) {
+                    if (data.day_index < lastDayProcessed) {
+                        trendDays = []; trendHI = []; 
+                    }
+                    trendDays.push(data.day_index);
+                    trendHI.push(hi);
+                    lastDayProcessed = data.day_index;
+
+                    Plotly.update('trendChart', { x: [trendDays], y: [trendHI] });
+                }
+            } catch (err) {}
+        }
+
+        setInterval(fetchCurrentState, 500);
+    </script>
+</body>
+</html>

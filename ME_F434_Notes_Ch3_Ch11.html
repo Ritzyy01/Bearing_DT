@@ -1,0 +1,935 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ME F434 Notes — Ch 3 & Ch 11</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Source+Serif+4:ital,wght@0,300;0,400;0,600;1,300&display=swap');
+
+  :root {
+    --bg: #0f0f13;
+    --surface: #16161d;
+    --surface2: #1e1e28;
+    --border: #2a2a38;
+    --accent1: #e8c84a;
+    --accent2: #5b9cf6;
+    --accent3: #e05a6b;
+    --accent4: #5ecb8a;
+    --text: #d8d8e8;
+    --muted: #7a7a9a;
+    --heading: #f0f0ff;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Source Serif 4', Georgia, serif;
+    font-size: 15px;
+    line-height: 1.75;
+    padding: 0 0 80px 0;
+  }
+
+  /* ---- Hero ---- */
+  .hero {
+    background: linear-gradient(135deg, #0f0f13 0%, #1a1228 50%, #0f1520 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 60px 40px 50px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -80px; right: -80px;
+    width: 350px; height: 350px;
+    background: radial-gradient(circle, rgba(91,156,246,0.12) 0%, transparent 70%);
+  }
+  .hero::after {
+    content: '';
+    position: absolute;
+    bottom: -60px; left: -60px;
+    width: 280px; height: 280px;
+    background: radial-gradient(circle, rgba(232,200,74,0.08) 0%, transparent 70%);
+  }
+  .hero-label {
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--accent2);
+    margin-bottom: 12px;
+  }
+  .hero h1 {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: clamp(28px, 5vw, 48px);
+    color: var(--heading);
+    line-height: 1.15;
+    margin-bottom: 14px;
+  }
+  .hero h1 span { color: var(--accent1); }
+  .hero-sub {
+    color: var(--muted);
+    font-style: italic;
+    font-size: 14px;
+  }
+  .badges {
+    display: flex; gap: 10px; flex-wrap: wrap; margin-top: 22px;
+  }
+  .badge {
+    padding: 4px 14px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+  }
+  .badge-y { background: rgba(232,200,74,0.15); color: var(--accent1); border: 1px solid rgba(232,200,74,0.3); }
+  .badge-b { background: rgba(91,156,246,0.15); color: var(--accent2); border: 1px solid rgba(91,156,246,0.3); }
+  .badge-g { background: rgba(94,203,138,0.15); color: var(--accent4); border: 1px solid rgba(94,203,138,0.3); }
+
+  /* ---- Layout ---- */
+  .container { max-width: 860px; margin: 0 auto; padding: 0 28px; }
+
+  /* ---- Chapter headers ---- */
+  .ch-header {
+    margin: 52px 0 30px;
+    padding: 28px 32px;
+    border-radius: 12px;
+    border-left: 4px solid var(--accent1);
+    background: var(--surface);
+    position: relative;
+    overflow: hidden;
+  }
+  .ch-header.blue { border-left-color: var(--accent2); }
+  .ch-header::after {
+    content: attr(data-num);
+    position: absolute;
+    right: 24px; top: 50%;
+    transform: translateY(-50%);
+    font-family: 'Playfair Display', serif;
+    font-size: 72px;
+    color: rgba(255,255,255,0.04);
+    line-height: 1;
+  }
+  .ch-header .ch-num {
+    font-size: 11px; letter-spacing: 3px; text-transform: uppercase;
+    color: var(--accent1); margin-bottom: 6px;
+  }
+  .ch-header.blue .ch-num { color: var(--accent2); }
+  .ch-header h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px; color: var(--heading);
+  }
+  .ch-header p {
+    margin-top: 8px; color: var(--muted); font-size: 13px; font-style: italic;
+  }
+
+  /* ---- Sections ---- */
+  .section {
+    margin: 28px 0;
+    background: var(--surface);
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    overflow: hidden;
+  }
+  .section-head {
+    padding: 14px 24px;
+    background: var(--surface2);
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 12px;
+  }
+  .section-head .dot {
+    width: 8px; height: 8px; border-radius: 50%;
+    background: var(--accent1); flex-shrink: 0;
+  }
+  .section-head.blue .dot { background: var(--accent2); }
+  .section-head.red .dot { background: var(--accent3); }
+  .section-head.green .dot { background: var(--accent4); }
+  .section-head h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 15px; color: var(--heading); font-weight: 700;
+  }
+  .section-body { padding: 20px 24px; }
+  .section-body p { margin-bottom: 12px; color: var(--text); }
+  .section-body p:last-child { margin-bottom: 0; }
+
+  /* ---- Key concept boxes ---- */
+  .kbox {
+    background: rgba(232,200,74,0.07);
+    border: 1px solid rgba(232,200,74,0.2);
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin: 16px 0;
+  }
+  .kbox.blue {
+    background: rgba(91,156,246,0.07);
+    border-color: rgba(91,156,246,0.2);
+  }
+  .kbox.red {
+    background: rgba(224,90,107,0.07);
+    border-color: rgba(224,90,107,0.2);
+  }
+  .kbox.green {
+    background: rgba(94,203,138,0.07);
+    border-color: rgba(94,203,138,0.2);
+  }
+  .kbox-label {
+    font-size: 10px; letter-spacing: 2px; text-transform: uppercase;
+    color: var(--accent1); margin-bottom: 8px; font-weight: 600;
+  }
+  .kbox.blue .kbox-label { color: var(--accent2); }
+  .kbox.red .kbox-label { color: var(--accent3); }
+  .kbox.green .kbox-label { color: var(--accent4); }
+  .kbox p { margin: 0; font-size: 14px; }
+
+  /* ---- Formula ---- */
+  .formula {
+    background: #0c0c14;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px 24px;
+    margin: 16px 0;
+    font-family: 'Courier New', monospace;
+    font-size: 14px;
+    color: var(--accent1);
+    text-align: center;
+    letter-spacing: 0.5px;
+  }
+
+  /* ---- Grid cards ---- */
+  .grid { display: grid; gap: 14px; margin: 16px 0; }
+  .grid-2 { grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+  .grid-3 { grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); }
+
+  .card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px;
+  }
+  .card-title {
+    font-size: 12px; font-weight: 600; letter-spacing: 0.5px;
+    color: var(--accent1); margin-bottom: 8px; text-transform: uppercase;
+  }
+  .card.blue .card-title { color: var(--accent2); }
+  .card.red .card-title { color: var(--accent3); }
+  .card.green .card-title { color: var(--accent4); }
+  .card p { font-size: 13px; color: var(--text); margin: 0; line-height: 1.6; }
+
+  /* ---- Lists ---- */
+  ul.notes-list {
+    padding-left: 0; list-style: none;
+  }
+  ul.notes-list li {
+    padding: 6px 0 6px 20px;
+    position: relative;
+    font-size: 14px;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    color: var(--text);
+  }
+  ul.notes-list li:last-child { border-bottom: none; }
+  ul.notes-list li::before {
+    content: '›';
+    position: absolute; left: 4px;
+    color: var(--accent1); font-weight: 700;
+  }
+  ul.notes-list.blue li::before { color: var(--accent2); }
+  ul.notes-list.green li::before { color: var(--accent4); }
+
+  /* ---- Five-dim visual ---- */
+  .five-dim {
+    display: flex; justify-content: center; align-items: center;
+    flex-wrap: wrap; gap: 10px;
+    padding: 24px 0; margin: 16px 0;
+  }
+  .dim-node {
+    width: 90px; height: 90px;
+    border-radius: 50%;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 700;
+    text-align: center; line-height: 1.2;
+    letter-spacing: 0.5px;
+    border: 2px solid;
+    transition: transform 0.2s;
+    cursor: default;
+  }
+  .dim-node:hover { transform: scale(1.08); }
+  .dim-node .dim-abbr { font-size: 20px; font-family: 'Playfair Display', serif; display: block; margin-bottom: 4px; }
+  .dim-pe { background: rgba(232,200,74,0.1); border-color: var(--accent1); color: var(--accent1); }
+  .dim-ve { background: rgba(91,156,246,0.1); border-color: var(--accent2); color: var(--accent2); }
+  .dim-ss { background: rgba(224,90,107,0.1); border-color: var(--accent3); color: var(--accent3); }
+  .dim-dd { background: rgba(94,203,138,0.1); border-color: var(--accent4); color: var(--accent4); }
+  .dim-cn {
+    background: rgba(200,200,255,0.1); border-color: #aaaaff; color: #aaaaff;
+    width: 100px; height: 100px;
+  }
+
+  /* ---- CN connections table ---- */
+  .cn-table {
+    width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 13px;
+  }
+  .cn-table th {
+    background: var(--surface2); padding: 10px 14px;
+    text-align: left; color: var(--accent2);
+    font-size: 11px; letter-spacing: 1px; text-transform: uppercase;
+    border-bottom: 1px solid var(--border);
+  }
+  .cn-table td {
+    padding: 10px 14px; border-bottom: 1px solid rgba(255,255,255,0.04);
+    color: var(--text); vertical-align: top;
+  }
+  .cn-table tr:last-child td { border-bottom: none; }
+  .cn-table td:first-child { color: var(--accent1); font-weight: 600; font-size: 12px; font-family: monospace; }
+
+  /* ---- VE sub-model grid ---- */
+  .ve-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 16px 0; }
+  .ve-card {
+    background: var(--surface2); border-radius: 8px;
+    padding: 14px 16px; border: 1px solid var(--border);
+  }
+  .ve-card .vc-label {
+    font-size: 13px; font-weight: 700; color: var(--accent1); margin-bottom: 6px;
+  }
+  .ve-card p { font-size: 13px; margin: 0; color: var(--text); line-height: 1.6; }
+
+  /* ---- 8 Rules ---- */
+  .rules-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 10px; margin: 16px 0; }
+  .rule-card {
+    background: var(--surface2); border: 1px solid var(--border);
+    border-radius: 8px; padding: 14px;
+  }
+  .rule-num { font-size: 28px; font-family: 'Playfair Display', serif; color: rgba(255,255,255,0.08); line-height: 1; }
+  .rule-title { font-size: 12px; font-weight: 700; color: var(--accent1); text-transform: uppercase; letter-spacing: 0.5px; margin: 4px 0 6px; }
+  .rule-desc { font-size: 12px; color: var(--muted); line-height: 1.5; }
+
+  /* ---- VR vs AR table ---- */
+  .compare-table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 13px; }
+  .compare-table th { padding: 10px 14px; text-align: left; border-bottom: 2px solid var(--border); font-size: 12px; letter-spacing: 1px; text-transform: uppercase; }
+  .compare-table th:nth-child(2) { color: var(--accent2); }
+  .compare-table th:nth-child(3) { color: var(--accent3); }
+  .compare-table th:first-child { color: var(--muted); }
+  .compare-table td { padding: 9px 14px; border-bottom: 1px solid rgba(255,255,255,0.04); vertical-align: top; line-height: 1.55; }
+  .compare-table td:first-child { color: var(--muted); font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+  .compare-table tr:last-child td { border-bottom: none; }
+
+  /* ---- divider ---- */
+  .divider { height: 1px; background: var(--border); margin: 40px 0; }
+
+  /* ---- exam tip ---- */
+  .exam-tip {
+    background: rgba(224,90,107,0.08);
+    border: 1px solid rgba(224,90,107,0.25);
+    border-radius: 8px; padding: 16px 20px; margin: 20px 0;
+  }
+  .exam-tip .et-label { font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--accent3); margin-bottom: 8px; font-weight: 700; }
+  .exam-tip p { font-size: 14px; margin: 0; }
+
+  /* ---- summary box ---- */
+  .summary {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 24px 28px;
+    margin: 28px 0;
+  }
+  .summary h4 { font-family: 'Playfair Display', serif; font-size: 17px; color: var(--heading); margin-bottom: 14px; }
+
+  strong { color: var(--heading); }
+  em { color: var(--muted); }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="container">
+    <div class="hero-label">ME F434 · Digital Twins in Mechanical Engineering</div>
+    <h1>Study Notes<br><span>Chapters 3 & 11</span></h1>
+    <p class="hero-sub">Tao et al., <em>Digital Twin Driven Smart Manufacturing</em>, Elsevier 2019</p>
+    <div class="badges">
+      <span class="badge badge-y">Chapter 3 · 5D DT Model</span>
+      <span class="badge badge-b">Chapter 11 · VR & AR</span>
+      <span class="badge badge-g">Exam Ready</span>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════ CHAPTER 3 ═══════════════════ -->
+<div class="container">
+
+  <div class="ch-header" data-num="3">
+    <div class="ch-num">Chapter 3</div>
+    <h2>Five-Dimension Digital Twin Modeling and Its Key Technologies</h2>
+    <p>From Grieves' 3D model to the extended 5D framework, three DT levels, and 8 modeling rules</p>
+  </div>
+
+  <!-- 3.1 Traditional 3D DT -->
+  <div class="section">
+    <div class="section-head">
+      <div class="dot"></div>
+      <h3>3.1 — The Traditional Three-Dimension Digital Twin (Grieves, 2003)</h3>
+    </div>
+    <div class="section-body">
+      <div class="kbox">
+        <div class="kbox-label">Origin</div>
+        <p>First proposed by <strong>Grieves in 2003</strong> at the University of Michigan in a Product Lifecycle Management (PLM) course. Considered the origin of the DT concept.</p>
+      </div>
+      <p>The original three-dimension DT contains three parts:</p>
+      <div class="grid grid-3">
+        <div class="card">
+          <div class="card-title">Physical Entity</div>
+          <p>Exists in physical space. Has real functions and capabilities. Completes missions and produces actual outputs (e.g., aircraft, radar).</p>
+        </div>
+        <div class="card blue">
+          <div class="card-title">Virtual Entity</div>
+          <p>A digital mirror of the PE. Described by models of geometry, physics, behavior. Characterized by real-time sync, faithful mapping, and high fidelity.</p>
+        </div>
+        <div class="card green">
+          <div class="card-title">Connection</div>
+          <p>Enables bidirectional data exchange. PE data → VE for model updating. VE insights → PE to guide and optimize. Forms a closed loop.</p>
+        </div>
+      </div>
+      <div class="kbox red" style="margin-top:16px;">
+        <div class="kbox-label">Limitation</div>
+        <p>The 3D model <strong>cannot accommodate new requirements</strong> from wider applications, new IT (IoT, cloud, AI), and the need for data fusion and on-demand services.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3.2 New Requirements -->
+  <div class="section">
+    <div class="section-head blue">
+      <div class="dot"></div>
+      <h3>3.2 — New Requirements on the Digital Twin</h3>
+    </div>
+    <div class="section-body">
+      <div class="grid grid-2">
+        <div class="card">
+          <div class="card-title">1. Wider Application</div>
+          <p>DT expanded beyond aerospace into automotive, healthcare, agriculture. New demands: high-quality service, user demand mining, shorter time-to-market.</p>
+        </div>
+        <div class="card blue">
+          <div class="card-title">2. Embrace New IT</div>
+          <p>IoT, cloud computing, big data, AI build a closed loop between physical and virtual spaces. The 3D DT couldn't fully leverage these technologies.</p>
+        </div>
+        <div class="card green">
+          <div class="card-title">3. Data & Services</div>
+          <p>Data is crucial — physical + virtual sources must be integrated. Services must be encapsulated with friendly interfaces for non-expert users.</p>
+        </div>
+        <div class="card red">
+          <div class="card-title">4. High-Fidelity Modeling</div>
+          <p>Need geometry + physics + behavior + rules models — all integrated. Behavior and rules modeling were underdeveloped in the 3D DT.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3.3 Five-Dimension DT -->
+  <div class="section">
+    <div class="section-head">
+      <div class="dot"></div>
+      <h3>3.3 — The Extended Five-Dimension Digital Twin</h3>
+    </div>
+    <div class="section-body">
+      <div class="formula">M<sub>DT</sub> = (PE, VE, Ss, DD, CN)</div>
+      <p>The DT is extended to 5 dimensions by adding <strong>DT Data (DD)</strong> and <strong>Services (Ss)</strong>. Using a human body analogy:</p>
+
+      <div class="five-dim">
+        <div class="dim-node dim-pe"><span class="dim-abbr">PE</span>Skeleton</div>
+        <div class="dim-node dim-ve"><span class="dim-abbr">VE</span>Heart</div>
+        <div class="dim-node dim-cn"><span class="dim-abbr">CN</span>Blood Vessel</div>
+        <div class="dim-node dim-dd"><span class="dim-abbr">DD</span>Blood</div>
+        <div class="dim-node dim-ss"><span class="dim-abbr">Ss</span>Sense Organ</div>
+      </div>
+
+      <!-- PE -->
+      <div class="kbox">
+        <div class="kbox-label">PE — Physical Entity ("Skeleton")</div>
+        <p>Consists of subsystems (dynamic, control, hydraulic) + sensors. Sensors collect real-time states (vibration, force, torque, speed) and conditions (environment, loads, control orders). Requires RFID, WSN, embedded systems, soft sensors for data collection.</p>
+      </div>
+
+      <!-- VE -->
+      <div class="kbox blue">
+        <div class="kbox-label">VE — Virtual Entity ("Heart") — Equation 3.2: VE = (Gv, Pv, Bv, Rv)</div>
+        <p>A faithful mirror of PE consisting of four coupled model types:</p>
+      </div>
+      <div class="ve-grid">
+        <div class="ve-card">
+          <div class="vc-label">Gv — Geometry Model</div>
+          <p>Describes shapes, sizes, assembly relations. The "container" for other models. Built with SolidWorks, AutoCAD, 3D MAX.</p>
+        </div>
+        <div class="ve-card">
+          <div class="vc-label">Pv — Physics Model</div>
+          <p>Physical properties (speed, wear, force) based on Gv. Reflects deformation, fracture, corrosion. FEM widely used.</p>
+        </div>
+        <div class="ve-card">
+          <div class="vc-label">Bv — Behavior Model</div>
+          <p>State transitions, performance degradation, coordination under control orders or disturbances. Uses FSM, Markov chain, ontology.</p>
+        </div>
+        <div class="ve-card">
+          <div class="vc-label">Rv — Rule Model</div>
+          <p>Rules (associations, constraints, deductions) mined from historical PE data. Gives VE prediction capability. Neural networks, SVM, random forests.</p>
+        </div>
+      </div>
+      <p style="font-size:13px; color:var(--muted);">After modeling, Gv, Pv, Bv, Rv are coupled and tested via VV&A (Verification, Validation, Accreditation).</p>
+
+      <!-- Ss -->
+      <div class="kbox red">
+        <div class="kbox-label">Ss — Services ("Sense Organ") — Equation 3.3: Ss = (Function, Input, Output, Quality, State)</div>
+        <p>Each service is a quintuple. For PE: monitoring, PHM, state prediction, energy optimization. For VE: construction, calibration, model test services. Enables on-demand usage by non-expert users.</p>
+      </div>
+
+      <!-- DD -->
+      <div class="kbox green">
+        <div class="kbox-label">DD — Digital Twin Data ("Blood") — Equation 3.4: DD = (Dp, Dv, Ds, Dk, Df)</div>
+        <p><strong>Dp</strong>: PE data (operation states, conditions) · <strong>Dv</strong>: VE data (model params, simulation outputs) · <strong>Ds</strong>: Service data (encapsulation, invocation) · <strong>Dk</strong>: Domain knowledge (mined or from databases) · <strong>Df</strong>: Fused data (via neural network, D-S algorithm, Kalman filter). DD is the <em>driver</em> of the DT.</p>
+      </div>
+
+      <!-- CN -->
+      <div class="kbox" style="background:rgba(170,170,255,0.07); border-color:rgba(170,170,255,0.2);">
+        <div class="kbox-label" style="color:#aaaaff;">CN — Connection ("Blood Vessel") — Equation 3.5</div>
+        <p>CN = (CN_SD, CN_PD, CN_VD, CN_PS, CN_VS, CN_PV) — all <strong>bidirectional</strong>. Each connection modeled as a quintuple: (Data sources, Unit, Value, Scope, Sampling interval).</p>
+      </div>
+      <table class="cn-table">
+        <tr><th>Connection</th><th>Links</th><th>Purpose</th></tr>
+        <tr><td>CN_SD</td><td>Ss ↔ DD</td><td>Services consume & produce data in DD</td></tr>
+        <tr><td>CN_PD</td><td>PE ↔ DD</td><td>Sensor data stored in DD; processed data returned to PE</td></tr>
+        <tr><td>CN_VD</td><td>VE ↔ DD</td><td>Simulation outputs stored; DD updates VE initialization</td></tr>
+        <tr><td>CN_PS</td><td>PE ↔ Ss</td><td>Real data drives services; service commands actuate PE</td></tr>
+        <tr><td>CN_VS</td><td>VE ↔ Ss</td><td>Services run on VE; validate strategies before applying to PE</td></tr>
+        <tr><td>CN_PV</td><td>PE ↔ VE</td><td>Real-time synchronization; used for calibration when PE/VE deviate</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- 3.4 Three Levels -->
+  <div class="section">
+    <div class="section-head green">
+      <div class="dot"></div>
+      <h3>3.4 — Application-Oriented Three-Level Digital Twins</h3>
+    </div>
+    <div class="section-body">
+      <p>DTs are classified into three levels based on the complexity of the physical entity they model (using a shop-floor as example):</p>
+      <div class="grid grid-3">
+        <div class="card">
+          <div class="card-title">Unit-Level DT</div>
+          <p>Minimum independent individual (one person, one machine, one product). Contains a basic PE↔VE closed loop. Supports state perception, analysis, self-control. Applications: monitoring and PHM of a single machine.</p>
+        </div>
+        <div class="card blue">
+          <div class="card-title">System-Level DT</div>
+          <p>Multiple unit-level DTs connected. Characterized by self-organization, self-configuration, self-optimization. New services added: scheduling, progress control, process optimization for multiple units.</p>
+        </div>
+        <div class="card green">
+          <div class="card-title">SoS-Level DT</div>
+          <p>System-level DTs combined into a System of Systems. Global optimization across the entire shop-floor. Driven by data aggregation, distributed computing, model interoperation. Most complex — abundant services and data.</p>
+        </div>
+      </div>
+      <div class="exam-tip">
+        <div class="et-label">Exam Tip</div>
+        <p>The three levels map to scale: unit = one machine, system = production line, SoS = entire shop-floor. Use this to justify which DT level is appropriate for a given application scenario.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3.5 Key Technologies -->
+  <div class="section">
+    <div class="section-head red">
+      <div class="dot"></div>
+      <h3>3.5 — Key Technologies for Each Dimension</h3>
+    </div>
+    <div class="section-body">
+      <div class="grid grid-2">
+        <div class="card">
+          <div class="card-title">PE Technologies</div>
+          <ul class="notes-list">
+            <li>RFID — track & identify PE</li>
+            <li>WSN — distributed sensors for state collection</li>
+            <li>Soft sensor — calculate hard-to-measure params via algorithms</li>
+            <li>Embedded system — for monitoring & control</li>
+            <li>Distributed sensor layout optimization</li>
+          </ul>
+        </div>
+        <div class="card blue">
+          <div class="card-title">VE Technologies</div>
+          <ul class="notes-list blue">
+            <li>3D solid modeling (Gv)</li>
+            <li>Physics modeling — FEM, multiphysics (Pv)</li>
+            <li>Behavior modeling — FSM, Markov chain (Bv)</li>
+            <li>Rule modeling — ML algorithms (Rv)</li>
+            <li>Model integration & consistency analysis</li>
+            <li>VV&A (Verification, Validation, Accreditation)</li>
+          </ul>
+        </div>
+        <div class="card red">
+          <div class="card-title">Ss Technologies</div>
+          <ul class="notes-list">
+            <li>Resource management, description, encapsulation</li>
+            <li>Service visualization & HMI</li>
+            <li>Service search, matching, evaluation</li>
+            <li>Optimal selection & combination</li>
+            <li>Fault-tolerant management</li>
+          </ul>
+        </div>
+        <div class="card green">
+          <div class="card-title">DD Technologies</div>
+          <ul class="notes-list green">
+            <li>Data storage, modeling, cleaning</li>
+            <li>Data transformation & integration/fusion</li>
+            <li>Data analysis & visualization</li>
+            <li>Data mining — statistical / ML</li>
+            <li>Data security & integrity check</li>
+          </ul>
+        </div>
+      </div>
+      <div class="card" style="margin-top:14px;">
+        <div class="card-title">CN Technologies</div>
+        <ul class="notes-list">
+          <li>Communication protocol analysis & conversion</li>
+          <li>Devices for perception and access (unified protocol conversion)</li>
+          <li>Wireless communication for flexible transmission</li>
+          <li>API design for software-to-software communication</li>
+          <li>Communication standards and specifications</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- 3.6 Eight Rules -->
+  <div class="section">
+    <div class="section-head">
+      <div class="dot"></div>
+      <h3>3.6 — Eight Rules for Digital Twin Modeling</h3>
+    </div>
+    <div class="section-body">
+      <div class="rules-grid">
+        <div class="rule-card">
+          <div class="rule-num">01</div>
+          <div class="rule-title">Data & Knowledge Based</div>
+          <div class="rule-desc">Existing knowledge provides rules; real-time data continuously calibrates models.</div>
+        </div>
+        <div class="rule-card">
+          <div class="rule-num">02</div>
+          <div class="rule-title">Modularization</div>
+          <div class="rule-desc">Separate & recombine components (unit/system/SoS) for flexibility and reusability.</div>
+        </div>
+        <div class="rule-card">
+          <div class="rule-num">03</div>
+          <div class="rule-title">Light Weight</div>
+          <div class="rule-desc">Shorter transmission time, faster speed, better real-time performance. Simplify without losing fidelity.</div>
+        </div>
+        <div class="rule-card">
+          <div class="rule-num">04</div>
+          <div class="rule-title">Hierarchy</div>
+          <div class="rule-desc">Edge-fog-cloud structure distributes resources at appropriate layers for timeliness.</div>
+        </div>
+        <div class="rule-card">
+          <div class="rule-num">05</div>
+          <div class="rule-title">Standardization</div>
+          <div class="rule-desc">Unified encoding, interfaces, protocols — enables module integration & data exchange.</div>
+        </div>
+        <div class="rule-card">
+          <div class="rule-num">06</div>
+          <div class="rule-title">Servitization</div>
+          <div class="rule-desc">Encapsulate DT functions (evaluation, prediction, validation) as standard services for easy use.</div>
+        </div>
+        <div class="rule-card">
+          <div class="rule-num">07</div>
+          <div class="rule-title">Openness & Scalability</div>
+          <div class="rule-desc">Open to external models/services/tools; scalable through adding new models.</div>
+        </div>
+        <div class="rule-card">
+          <div class="rule-num">08</div>
+          <div class="rule-title">Robustness</div>
+          <div class="rule-desc">Handles uncertainty, dynamism, complexity of industrial environments. Adapts when conditions change.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="summary">
+    <h4>Chapter 3 — Summary</h4>
+    <ul class="notes-list">
+      <li>Grieves' 3D DT (PE + VE + CN) is insufficient for modern needs</li>
+      <li>Extended 5D DT adds DD (data fusion driver) and Ss (on-demand services)</li>
+      <li>VE = Gv + Pv + Bv + Rv (4 coupled model types); tested by VV&A</li>
+      <li>CN has exactly 6 bidirectional connections: CN_SD, CN_PD, CN_VD, CN_PS, CN_VS, CN_PV</li>
+      <li>Three DT levels: unit (one machine) → system (production line) → SoS (entire shop-floor)</li>
+      <li>8 modeling rules guide future DT development</li>
+    </ul>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- ═══════════════════ CHAPTER 11 ═══════════════════ -->
+
+  <div class="ch-header blue" data-num="11">
+    <div class="ch-num blue">Chapter 11</div>
+    <h2>Digital Twin and VR / AR / Mixed Reality</h2>
+    <p>Applications, comparison, integration framework, and assembly case study</p>
+  </div>
+
+  <!-- 11.1 Introduction -->
+  <div class="section">
+    <div class="section-head blue">
+      <div class="dot"></div>
+      <h3>11.1 — Introduction & Definitions</h3>
+    </div>
+    <div class="section-body">
+      <div class="grid grid-3">
+        <div class="card blue">
+          <div class="card-title">VR — Virtual Reality</div>
+          <p>Provides a <strong>fully virtual, immersive</strong> computer-generated environment. Users are isolated from the physical world. Characterized by immersion, presence, interactivity, navigation. Devices: HMDs, data gloves, CAVE systems.</p>
+        </div>
+        <div class="card red">
+          <div class="card-title">AR — Augmented Reality</div>
+          <p><strong>Overlays virtual elements on the real world</strong> — augments rather than replaces reality. Term coined by Caudell & Mizell (1990). User stays in physical environment supplemented by virtual info.</p>
+        </div>
+        <div class="card green">
+          <div class="card-title">MR — Mixed Reality</div>
+          <p>First proposed by Milgram & Kishino (1994). Extends along a "virtuality continuum" from fully real to fully virtual. Essentially the same as AR. In this chapter, AR is used to denote AR/MR.</p>
+        </div>
+      </div>
+      <div class="kbox blue" style="margin-top:16px;">
+        <div class="kbox-label">Why VR/AR + DT?</div>
+        <p>VR and AR can create interactive, immersive environments that <strong>enhance the seamless integration of physical and virtual spaces</strong>, which is exactly what the DT needs. Combining them augments the DT's physical-virtual fusion and improves service quality for users.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 11.2 VR Applications -->
+  <div class="section">
+    <div class="section-head blue">
+      <div class="dot"></div>
+      <h3>11.2 — VR in Design, Manufacturing, and Service</h3>
+    </div>
+    <div class="section-body">
+      <div class="grid grid-3">
+        <div class="card blue">
+          <div class="card-title">VR in Design</div>
+          <ul class="notes-list blue">
+            <li>Factory layout design in 3D virtual space</li>
+            <li>Collaborative design platforms (multiple users)</li>
+            <li>Product prototyping & design evaluation</li>
+            <li>Stress evaluation, interference checking</li>
+            <li>Cable harness design with captured knowledge</li>
+          </ul>
+        </div>
+        <div class="card blue">
+          <div class="card-title">VR in Manufacturing</div>
+          <ul class="notes-list blue">
+            <li>CNC machining simulation & tool path planning</li>
+            <li>Virtual assembly verification (collision detection)</li>
+            <li>Multimodal interaction (gesture + speech)</li>
+            <li>Robot path planning via virtual arms</li>
+            <li>Haptic-based programming systems</li>
+          </ul>
+        </div>
+        <div class="card blue">
+          <div class="card-title">VR in Service</div>
+          <ul class="notes-list blue">
+            <li>Maintenance simulation & visualization</li>
+            <li>Logistics planning (immersive warehouse)</li>
+            <li>Operator training for assembly sequences</li>
+            <li>Maintenance training with disassembly planning</li>
+            <li>Rocket engine health management visualization</li>
+          </ul>
+        </div>
+      </div>
+      <div class="kbox red" style="margin-top:14px;">
+        <div class="kbox-label">VR Limitations</div>
+        <p>Users are <strong>isolated from the familiar physical environment</strong>, decreasing fidelity. Building a completely virtual environment imposes heavy computational burden. Real-time performance is challenging.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 11.3 AR Applications -->
+  <div class="section">
+    <div class="section-head red">
+      <div class="dot"></div>
+      <h3>11.3 — AR in Design, Manufacturing, and Service</h3>
+    </div>
+    <div class="section-body">
+      <div class="grid grid-3">
+        <div class="card red">
+          <div class="card-title">AR in Design</div>
+          <ul class="notes-list">
+            <li>Overlay 3D machine models on physical space for factory layout</li>
+            <li>Gesture-based prototype evaluation</li>
+            <li>Collaborative product design across locations</li>
+            <li>Reformable mock-ups for shape/color testing</li>
+            <li>MR usability tests for household appliances</li>
+          </ul>
+        </div>
+        <div class="card red">
+          <div class="card-title">AR in Manufacturing</div>
+          <ul class="notes-list">
+            <li>In-situ CNC simulation (real cutter + virtual workpiece)</li>
+            <li>NC program validation with AR overlay</li>
+            <li>Assembly planning: WDP + PDP integration</li>
+            <li>Assembly guidance (visual tree + RFID)</li>
+            <li>Robot path planning preview before execution</li>
+          </ul>
+        </div>
+        <div class="card red">
+          <div class="card-title">AR in Service</div>
+          <ul class="notes-list">
+            <li>Equipment maintenance with 3D model overlays</li>
+            <li>Voltage test guidance via AR markers</li>
+            <li>Warehouse logistics with RFID + AR visualization</li>
+            <li>Order picking with HMD (position + process info)</li>
+            <li>Assembly training with intelligent tutoring (ITS + AR)</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 11.4 VR vs AR Comparison -->
+  <div class="section">
+    <div class="section-head green">
+      <div class="dot"></div>
+      <h3>11.4 — Comparison: VR vs AR</h3>
+    </div>
+    <div class="section-body">
+      <table class="compare-table">
+        <tr>
+          <th>Aspect</th>
+          <th>VR (Virtual Reality)</th>
+          <th>AR / MR (Augmented Reality)</th>
+        </tr>
+        <tr>
+          <td>Environment</td>
+          <td>Fully virtual — completely replaces physical world</td>
+          <td>Overlays virtual objects onto the real physical world</td>
+        </tr>
+        <tr>
+          <td>Image Source</td>
+          <td>Virtual graphics, images, models only</td>
+          <td>Combination of physical objects + virtual elements</td>
+        </tr>
+        <tr>
+          <td>Perspective</td>
+          <td>Virtual-world centric; objects scale to virtual perspective</td>
+          <td>Physical-world centric; virtual objects align to real surroundings</td>
+        </tr>
+        <tr>
+          <td>Presence</td>
+          <td>In the virtual world; no sense of physical world</td>
+          <td>In the physical world, augmented with virtual objects</td>
+        </tr>
+        <tr>
+          <td>Interaction</td>
+          <td>Only with virtual objects via HMDs, gloves, handles</td>
+          <td>With both physical and virtual objects simultaneously, more natural</td>
+        </tr>
+        <tr>
+          <td>Immersion</td>
+          <td>Full immersion; visual, auditory, haptic feedback in virtual world</td>
+          <td>Familiar physical environment + supplementary virtual elements; retains realism</td>
+        </tr>
+        <tr>
+          <td>Example Devices</td>
+          <td>Oculus Rift, HTC Vive, Sony PlayStation VR, Samsung Gear VR</td>
+          <td>Microsoft HoloLens, Meta Headsets, Google Glass, ODG headsets</td>
+        </tr>
+        <tr>
+          <td>Best For in DT</td>
+          <td>Planning, training, verification in fully simulated environment</td>
+          <td>Guidance, maintenance, operation with physical context retained</td>
+        </tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- 11.5 VR/AR in DT -->
+  <div class="section">
+    <div class="section-head blue">
+      <div class="dot"></div>
+      <h3>11.5 — Digital Twin + VR and AR: Framework</h3>
+    </div>
+    <div class="section-body">
+      <p>Existing company applications demonstrate the trend:</p>
+      <div class="grid grid-2">
+        <div class="card blue">
+          <div class="card-title">VR in DT (Industry)</div>
+          <ul class="notes-list blue">
+            <li><strong>Siemens</strong>: VR goggles for gas turbine DT; sensor data → colors for temp distribution</li>
+            <li><strong>Huawei</strong>: DTs for products + assembly stations; VR glasses/gloves for virtual assembly simulation</li>
+            <li><strong>Oracle</strong>: Users visit DT-based virtual plant via Gear VR</li>
+            <li><strong>Alibaba Cloud</strong>: DT for integrated data model to improve existing VR systems</li>
+          </ul>
+        </div>
+        <div class="card red">
+          <div class="card-title">AR in DT (Industry)</div>
+          <ul class="notes-list">
+            <li><strong>GE</strong>: HoloLens overlays virtual steam turbine on real one — identifies damaged parts by "looking inside"</li>
+            <li><strong>PTC</strong>: DT + AR/VR combo for machine maintenance guidance</li>
+            <li><strong>Microsoft</strong>: MR in process DT — holograms of production line with real-time data for remote collaboration</li>
+            <li><strong>Peaxy</strong>: AR data visualization essential for DT to solve real business problems</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="kbox blue" style="margin-top:18px;">
+        <div class="kbox-label">Application Framework — How VR and AR Work in the 5D DT</div>
+        <p><strong>With VR:</strong> High-fidelity VEs presented in synthetic environment. User inputs (sounds, operations, positions) captured via VR devices → VE behaves autonomously → insights from DD demonstrated as visual/auditory/haptic feedback → supports layout planning, manufacturing operation, maintenance decisions.</p>
+      </div>
+      <div class="kbox red">
+        <div class="kbox-label">Application Framework — AR Role</div>
+        <p><strong>With AR:</strong> Gestures, operations, positions of PE captured by cameras/gloves/RFIDs → through image processing, tracking, rendering → virtual models from VE and insights from DD superimposed on PEs → displayed via HMDs, iPads, projectors → mixed environment where PE + VE + DD are tightly coupled → more natural interaction in design, operation, maintenance.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- 11.6 Assembly Case Study -->
+  <div class="section">
+    <div class="section-head green">
+      <div class="dot"></div>
+      <h3>11.6 — Case Study: DT-Driven Assembly Combining VR and AR</h3>
+    </div>
+    <div class="section-body">
+      <p>Using a <strong>complex aerospace product assembly</strong> as example. Key physical elements:</p>
+      <ul class="notes-list green">
+        <li><strong>Articulated arm + IPC</strong>: Scans parts to measure geometric dimensions and tolerances → point cloud data for virtual modeling</li>
+        <li><strong>Laser tracker + IPC</strong>: Tracks parts in real-time, measures 3D coordinates and key features → assembly accuracy prediction and process control</li>
+        <li><strong>Laser projector + IPC</strong>: Projects CAD-based outlines onto physical space to guide assembly and precise positioning</li>
+        <li><strong>VR/AR devices + IPC</strong>: HMDs, gloves, handles capture physical scene data; IPC performs simulation, tracking, information rendering</li>
+        <li><strong>Virtual models, data and services</strong>: Assembly design model, process model, demonstration model, scene model — all built from physical data; fused with real data to calibrate and optimize</li>
+      </ul>
+
+      <div class="grid grid-2" style="margin-top:16px;">
+        <div class="card blue">
+          <div class="card-title">VR Role in Assembly</div>
+          <p>VEs operate in immersive artificial environment → high-quality assembly planning, verification, operator training <em>before</em> actual assembly → eliminates costly errors in practice. Iterative design with no physical cost.</p>
+        </div>
+        <div class="card red">
+          <div class="card-title">AR Role in Assembly</div>
+          <p>Overlays graphical elements and DD insights on PEs → just-in-time information for assembly guidance → natural interaction (voice + gesture) → operator stays in physical environment while receiving virtual guidance.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="summary">
+    <h4>Chapter 11 — Summary</h4>
+    <ul class="notes-list">
+      <li><strong>VR</strong> = fully virtual, immersive; isolates user from physical world; best for planning, training, design verification</li>
+      <li><strong>AR/MR</strong> = overlays virtual on real; user stays in physical environment; best for real-time guidance, maintenance, operation</li>
+      <li>VR is limited by isolation from reality and heavy computational cost; AR retains physical context but needs tracking accuracy</li>
+      <li>In the 5D DT framework: VR enhances VE+DD interaction; AR integrates PE+VE+DD into a mixed environment</li>
+      <li>Industry leaders (GE, Siemens, PTC, Microsoft) are already combining DT with VR/AR</li>
+      <li>Assembly case: articulated arm + laser tracker + laser projector + VR/AR devices all feed the 5D DT to optimize aerospace assembly</li>
+      <li>Combining VR/AR with DT is described as <em>"an inevitable and beneficial trend"</em></li>
+    </ul>
+  </div>
+
+  <div class="exam-tip">
+    <div class="et-label">Key Exam Points</div>
+    <p>Q: Define VR and AR → VR = fully virtual immersive environment; AR = virtual information overlaid on real world. Q: How does VR/AR fit into 5D DT? → VR works with VE+DD in synthetic space; AR merges PE+VE+DD in physical space. Q: Give one industrial example each → VR: Siemens gas turbine DT with VR goggles; AR: GE HoloLens steam turbine inspection.</p>
+  </div>
+
+</div><!-- end container -->
+
+</body>
+</html>

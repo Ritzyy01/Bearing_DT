@@ -1,0 +1,14 @@
+﻿# Data files & heavy logs
+*.mat
+*.json
+*.csv
+
+# CAD files
+*.f3d
+*.f3z
+*.zip
+
+# IDEs and OS files
+.vscode/
+.DS_Store
+Thumbs.db
